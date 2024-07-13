@@ -7,10 +7,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type Todo struct{
-	ID int `json:"id"`
-	Completed bool `json:"completed"`
-	Bpdy string `json:"body"`
+type Todo struct {
+	ID        int    `json:"id"`
+	Completed bool   `json:"completed"`
+	Body      string `json:"body"`
 }
 
 func main() {
@@ -24,20 +24,20 @@ func main() {
 	})
 
 	app.Post("/api/todos", func(c *fiber.Ctx) error {
-		todo := Todo{}
+		todo := new(Todo)
 
-		if err := c.BodyParser(todo){
+		if err := c.BodyParser(todo); err != nil {
 			return err
 		}
 
-		if todo.body == "" {
-			return c.Status(400).JSON(fiber.Map{"error":"body is required"})
+		if todo.Body == "" {
+			return c.Status(400).JSON(fiber.Map{"error": "body is required"})
 		}
 
 		todo.ID = len(todos) + 1
-		todos = append(todos,*todo)
+		todos = append(todos, *todo)
 
-		return c.Status(201).JSON(todo) //created todo
+		return c.Status(201).JSON(todo) // created todo
 	})
 
 	log.Fatal(app.Listen(":4000"))
